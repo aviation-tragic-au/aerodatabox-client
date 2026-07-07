@@ -1,5 +1,7 @@
 # aerodatabox-client
 
+[![Test](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/test.yml/badge.svg)](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/test.yml) [![Lint](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/lint.yml/badge.svg)](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/lint.yml)
+
 An unofficial, community-developed Go client for the [AeroDataBox API](https://www.aerodatabox.com/). Not affiliated with, endorsed by, or sponsored by AeroDataBox or Timber Bytes LLP. Users are responsible for complying with the AeroDataBox Terms of Service.
 
 ## Installation
