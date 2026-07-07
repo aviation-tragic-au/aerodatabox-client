@@ -129,7 +129,7 @@ func (c *Client) GetAirportSolarTimeByDate(code, codeType string, dateLocal time
 }
 
 // GetGreatCircleDistance retrieves the distance and time between two airports - TIER 2
-func (c *Client) GetGreatCircleDistance(codeType, codeFrom, codeTo string, aircraftName *string, flightTimeModel *string) (*model.AirportDistanceTimeContract, error) {
+func (c *Client) GetGreatCircleDistance(codeType, codeFrom, codeTo string, aircraftName, flightTimeModel *string) (*model.AirportDistanceTimeContract, error) {
 	codeType = strings.ToLower(codeType)
 	switch codeType {
 	case "iata":

@@ -44,14 +44,14 @@ func (e EndpointHealthCheck) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetDataFeedStatus retrieves the status of a data feed - FREE TIER
-func (c *Client) GetDataFeedStatus(service string, withHttpCode bool) (*model.FeedServiceStatusContract, error) {
+func (c *Client) GetDataFeedStatus(service string, withHTTPCode bool) (*model.FeedServiceStatusContract, error) {
 	url, err := EndpointHealthCheckFeedStatusGeneral.Replace(map[string]string{"service": service})
 	if err != nil {
 		return nil, err
 	}
 
-	if withHttpCode {
-		url = url + "?withHttpCode=true"
+	if withHTTPCode {
+		url += "?withHttpCode=true"
 	}
 
 	req, err := c.getRequest(url)
