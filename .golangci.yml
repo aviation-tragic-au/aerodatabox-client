@@ -1,0 +1,80 @@
+version: "2"
+
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+    - goimports
+
+linters:
+  default: none
+  enable:
+    # Correctness
+    - errcheck
+    - govet
+    - staticcheck
+    - ineffassign
+    - unused
+
+    # Style / maintainability
+    - gocritic
+    - misspell
+    - revive
+
+    # Safety
+    - gosec
+
+    # Complexity / hygiene
+    - cyclop
+    - dupl
+    - gocognit
+
+  settings:
+    cyclop:
+      max-complexity: 15
+
+    gocognit:
+      min-complexity: 20
+
+    dupl:
+      threshold: 150
+
+    gosec:
+      excludes:
+        - G104  # errors unhandled — covered by errcheck
+        - G101  # potential hardcoded credentials — triggers on header name constants
+
+    misspell:
+      ignore-words:
+        - aircrafts  # AeroDataBox API URL path convention
+
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+      disabled-checks:
+        - commentedOutCode
+        - whyNoLint
+
+    revive:
+      rules:
+        - name: var-naming
+        - name: error-return
+        - name: error-strings
+        - name: increment-decrement
+        - name: range
+        - name: unused-parameter
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclusions:
+    rules:
+      - path: "_test\\.go"
+        linters:
+          - errcheck
+          - gosec
+          - dupl
+          - cyclop
+          - gocognit
+          - noctx
