@@ -45,7 +45,7 @@ linters:
         - G101  # potential hardcoded credentials — triggers on header name constants
 
     misspell:
-      ignore-words:
+      ignore-rules:
         - aircrafts  # AeroDataBox API URL path convention
 
     gocritic:
@@ -65,9 +65,6 @@ linters:
         - name: range
         - name: unused-parameter
 
-issues:
-  max-issues-per-linter: 0
-  max-same-issues: 0
   exclusions:
     rules:
       - path: "_test\\.go"
@@ -78,3 +75,7 @@ issues:
           - cyclop
           - gocognit
           - noctx
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
