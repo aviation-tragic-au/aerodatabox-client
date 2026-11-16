@@ -1,13 +1,13 @@
 # aerodatabox-client
 
-[![Test](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/test.yml/badge.svg)](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/test.yml) [![Lint](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/lint.yml/badge.svg)](https://github.com/deanstalker-stream/aerodatabox-client/actions/workflows/lint.yml)
+[![Test](https://github.com/aviation-tragic-au/aerodatabox-client/actions/workflows/test.yml/badge.svg)](https://github.com/aviation-tragic-au/aerodatabox-client/actions/workflows/test.yml) [![Lint](https://github.com/aviation-tragic-au/aerodatabox-client/actions/workflows/lint.yml/badge.svg)](https://github.com/aviation-tragic-au/aerodatabox-client/actions/workflows/lint.yml)
 
 An unofficial, community-developed Go client for the [AeroDataBox API](https://www.aerodatabox.com/). Not affiliated with, endorsed by, or sponsored by AeroDataBox or Timber Bytes LLP. Users are responsible for complying with the AeroDataBox Terms of Service.
 
 ## Installation
 
 ```bash
-go get github.com/deanstalker-stream/aerodatabox-client
+go get github.com/aviation-tragic-au/aerodatabox-client
 ```
 
 ## Configuration
@@ -35,8 +35,8 @@ import (
     "fmt"
     "log"
 
-    aero "github.com/deanstalker-stream/aerodatabox-client/client"
-    "github.com/deanstalker-stream/aerodatabox-client/model"
+    aero "github.com/aviation-tragic-au/aerodatabox-client/client"
+    "github.com/aviation-tragic-au/aerodatabox-client/model"
     "go.uber.org/zap"
 )
 
@@ -80,8 +80,8 @@ func main() {
 ```go
 import (
     "github.com/spf13/viper"
-    aero "github.com/deanstalker-stream/aerodatabox-client/client"
-    "github.com/deanstalker-stream/aerodatabox-client/model"
+    aero "github.com/aviation-tragic-au/aerodatabox-client/client"
+    "github.com/aviation-tragic-au/aerodatabox-client/model"
 )
 
 func setup(v *viper.Viper) {

@@ -1,4 +1,4 @@
-module github.com/deanstalker-stream/aerodatabox-client
+module github.com/aviation-tragic-au/aerodatabox-client
 
 go 1.26.2
 
