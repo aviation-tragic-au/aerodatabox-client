@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deanstalker-stream/aerodatabox-client/model"
+	"github.com/aviation-tragic-au/aerodatabox-client/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

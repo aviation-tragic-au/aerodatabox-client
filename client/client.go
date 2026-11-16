@@ -23,7 +23,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/deanstalker-stream/aerodatabox-client/model"
+	"github.com/aviation-tragic-au/aerodatabox-client/model"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )

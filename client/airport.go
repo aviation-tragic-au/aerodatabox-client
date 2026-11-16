@@ -15,7 +15,7 @@ package client
 //   limitations under the License.
 
 import (
-	"github.com/deanstalker-stream/aerodatabox-client/model"
+	"github.com/aviation-tragic-au/aerodatabox-client/model"
 	"github.com/google/go-querystring/query"
 )
 

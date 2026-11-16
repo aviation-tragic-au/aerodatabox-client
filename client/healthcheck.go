@@ -1,6 +1,6 @@
 package client
 
-import "github.com/deanstalker-stream/aerodatabox-client/model"
+import "github.com/aviation-tragic-au/aerodatabox-client/model"
 
 //    Copyright 2026 Dean Stalker
 //
