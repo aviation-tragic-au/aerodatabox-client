@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -106,7 +107,7 @@ func TestGetAirportCurrentTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportCurrentTime("JFK", "iata")
+		got, err := newTestClient(srv.URL).GetAirportCurrentTime(context.Background(), "JFK", "iata")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "America/New_York", got.TimeZoneID)
@@ -123,28 +124,28 @@ func TestGetAirportCurrentTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportCurrentTime("EGLL", "icao")
+		got, err := newTestClient(srv.URL).GetAirportCurrentTime(context.Background(), "EGLL", "icao")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "Europe/London", got.TimeZoneID)
 	})
 
 	t.Run("invalid IATA code returns error without making request", func(t *testing.T) {
-		got, err := newTestClient("").GetAirportCurrentTime("TOOLONG", "iata")
+		got, err := newTestClient("").GetAirportCurrentTime(context.Background(), "TOOLONG", "iata")
 		require.Error(t, err)
 		assert.Nil(t, got)
 		assert.Contains(t, err.Error(), "IATA")
 	})
 
 	t.Run("invalid ICAO code returns error without making request", func(t *testing.T) {
-		got, err := newTestClient("").GetAirportCurrentTime("EG", "icao")
+		got, err := newTestClient("").GetAirportCurrentTime(context.Background(), "EG", "icao")
 		require.Error(t, err)
 		assert.Nil(t, got)
 		assert.Contains(t, err.Error(), "ICAO")
 	})
 
 	t.Run("invalid code type returns error without making request", func(t *testing.T) {
-		got, err := newTestClient("").GetAirportCurrentTime("JFK", "local")
+		got, err := newTestClient("").GetAirportCurrentTime(context.Background(), "JFK", "local")
 		require.Error(t, err)
 		assert.Nil(t, got)
 	})
@@ -155,7 +156,7 @@ func TestGetAirportCurrentTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportCurrentTime("JFK", "iata")
+		_, err := newTestClient(srv.URL).GetAirportCurrentTime(context.Background(), "JFK", "iata")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -168,7 +169,7 @@ func TestGetAirportCurrentTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportCurrentTime("JFK", "iata")
+		_, err := newTestClient(srv.URL).GetAirportCurrentTime(context.Background(), "JFK", "iata")
 		require.Error(t, err)
 	})
 }
@@ -187,25 +188,25 @@ func TestGetAirportSolarTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportSolarTime("EGLL", "icao")
+		got, err := newTestClient(srv.URL).GetAirportSolarTime(context.Background(), "EGLL", "icao")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 	})
 
 	t.Run("invalid IATA code returns error without making request", func(t *testing.T) {
-		_, err := newTestClient("").GetAirportSolarTime("JK", "iata")
+		_, err := newTestClient("").GetAirportSolarTime(context.Background(), "JK", "iata")
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "IATA")
 	})
 
 	t.Run("invalid ICAO code returns error without making request", func(t *testing.T) {
-		_, err := newTestClient("").GetAirportSolarTime("TOOLONG", "icao")
+		_, err := newTestClient("").GetAirportSolarTime(context.Background(), "TOOLONG", "icao")
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "ICAO")
 	})
 
 	t.Run("invalid code type returns error without making request", func(t *testing.T) {
-		_, err := newTestClient("").GetAirportSolarTime("JFK", "unknown")
+		_, err := newTestClient("").GetAirportSolarTime(context.Background(), "JFK", "unknown")
 		require.Error(t, err)
 	})
 
@@ -215,7 +216,7 @@ func TestGetAirportSolarTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportSolarTime("JFK", "iata")
+		_, err := newTestClient(srv.URL).GetAirportSolarTime(context.Background(), "JFK", "iata")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -228,7 +229,7 @@ func TestGetAirportSolarTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportSolarTime("JFK", "iata")
+		_, err := newTestClient(srv.URL).GetAirportSolarTime(context.Background(), "JFK", "iata")
 		require.Error(t, err)
 	})
 }
@@ -249,7 +250,7 @@ func TestGetAirportSolarTimeByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportSolarTimeByDate("EGLL", "icao", date)
+		got, err := newTestClient(srv.URL).GetAirportSolarTimeByDate(context.Background(), "EGLL", "icao", date)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 	})
@@ -266,25 +267,25 @@ func TestGetAirportSolarTimeByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportSolarTimeByDate("JFK", "iata", noon)
+		got, err := newTestClient(srv.URL).GetAirportSolarTimeByDate(context.Background(), "JFK", "iata", noon)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 	})
 
 	t.Run("invalid IATA code returns error without making request", func(t *testing.T) {
-		_, err := newTestClient("").GetAirportSolarTimeByDate("JK", "iata", date)
+		_, err := newTestClient("").GetAirportSolarTimeByDate(context.Background(), "JK", "iata", date)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "IATA")
 	})
 
 	t.Run("invalid ICAO code returns error without making request", func(t *testing.T) {
-		_, err := newTestClient("").GetAirportSolarTimeByDate("EG", "icao", date)
+		_, err := newTestClient("").GetAirportSolarTimeByDate(context.Background(), "EG", "icao", date)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "ICAO")
 	})
 
 	t.Run("invalid code type returns error without making request", func(t *testing.T) {
-		_, err := newTestClient("").GetAirportSolarTimeByDate("JFK", "local", date)
+		_, err := newTestClient("").GetAirportSolarTimeByDate(context.Background(), "JFK", "local", date)
 		require.Error(t, err)
 	})
 
@@ -294,7 +295,7 @@ func TestGetAirportSolarTimeByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportSolarTimeByDate("JFK", "iata", date)
+		_, err := newTestClient(srv.URL).GetAirportSolarTimeByDate(context.Background(), "JFK", "iata", date)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -307,7 +308,7 @@ func TestGetAirportSolarTimeByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportSolarTimeByDate("JFK", "iata", date)
+		_, err := newTestClient(srv.URL).GetAirportSolarTimeByDate(context.Background(), "JFK", "iata", date)
 		require.Error(t, err)
 	})
 }
@@ -326,7 +327,7 @@ func TestGetGreatCircleDistance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetGreatCircleDistance("iata", "JFK", "LHR", nil, nil)
+		got, err := newTestClient(srv.URL).GetGreatCircleDistance(context.Background(), "iata", "JFK", "LHR", nil, nil)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "PT7H00M", got.ApproximateFlightTime)
@@ -343,7 +344,7 @@ func TestGetGreatCircleDistance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetGreatCircleDistance("icao", "KJFK", "EGLL", nil, nil)
+		got, err := newTestClient(srv.URL).GetGreatCircleDistance(context.Background(), "icao", "KJFK", "EGLL", nil, nil)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "PT7H15M", got.ApproximateFlightTime)
@@ -363,7 +364,7 @@ func TestGetGreatCircleDistance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGreatCircleDistance("iata", "JFK", "LHR", &aircraft, &flightModel)
+		_, err := newTestClient(srv.URL).GetGreatCircleDistance(context.Background(), "iata", "JFK", "LHR", &aircraft, &flightModel)
 		require.NoError(t, err)
 	})
 
@@ -378,43 +379,43 @@ func TestGetGreatCircleDistance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetGreatCircleDistance("IATA", "JFK", "LHR", nil, nil)
+		got, err := newTestClient(srv.URL).GetGreatCircleDistance(context.Background(), "IATA", "JFK", "LHR", nil, nil)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 	})
 
 	t.Run("invalid IATA codeFrom returns error", func(t *testing.T) {
-		_, err := newTestClient("").GetGreatCircleDistance("iata", "TOOLONG", "LHR", nil, nil)
+		_, err := newTestClient("").GetGreatCircleDistance(context.Background(), "iata", "TOOLONG", "LHR", nil, nil)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "IATA")
 	})
 
 	t.Run("invalid IATA codeTo returns error", func(t *testing.T) {
-		_, err := newTestClient("").GetGreatCircleDistance("iata", "JFK", "TOOLONG", nil, nil)
+		_, err := newTestClient("").GetGreatCircleDistance(context.Background(), "iata", "JFK", "TOOLONG", nil, nil)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "IATA")
 	})
 
 	t.Run("invalid ICAO codeFrom returns error", func(t *testing.T) {
-		_, err := newTestClient("").GetGreatCircleDistance("icao", "EG", "EGLL", nil, nil)
+		_, err := newTestClient("").GetGreatCircleDistance(context.Background(), "icao", "EG", "EGLL", nil, nil)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "ICAO")
 	})
 
 	t.Run("invalid ICAO codeTo returns error", func(t *testing.T) {
-		_, err := newTestClient("").GetGreatCircleDistance("icao", "KJFK", "EG", nil, nil)
+		_, err := newTestClient("").GetGreatCircleDistance(context.Background(), "icao", "KJFK", "EG", nil, nil)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "ICAO")
 	})
 
 	t.Run("invalid code type returns error", func(t *testing.T) {
-		_, err := newTestClient("").GetGreatCircleDistance("local", "JFK", "LHR", nil, nil)
+		_, err := newTestClient("").GetGreatCircleDistance(context.Background(), "local", "JFK", "LHR", nil, nil)
 		require.Error(t, err)
 	})
 
 	t.Run("invalid flightTimeModel returns error", func(t *testing.T) {
 		bad := "InvalidModel"
-		_, err := newTestClient("").GetGreatCircleDistance("iata", "JFK", "LHR", nil, &bad)
+		_, err := newTestClient("").GetGreatCircleDistance(context.Background(), "iata", "JFK", "LHR", nil, &bad)
 		require.Error(t, err)
 	})
 
@@ -424,7 +425,7 @@ func TestGetGreatCircleDistance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGreatCircleDistance("iata", "JFK", "LHR", nil, nil)
+		_, err := newTestClient(srv.URL).GetGreatCircleDistance(context.Background(), "iata", "JFK", "LHR", nil, nil)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -437,7 +438,7 @@ func TestGetGreatCircleDistance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGreatCircleDistance("iata", "JFK", "LHR", nil, nil)
+		_, err := newTestClient(srv.URL).GetGreatCircleDistance(context.Background(), "iata", "JFK", "LHR", nil, nil)
 		require.Error(t, err)
 	})
 }

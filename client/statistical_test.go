@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -127,7 +128,7 @@ func TestGetAirportDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportDelays("EGLL", "icao", nil)
+		got, err := newTestClient(srv.URL).GetAirportDelays(context.Background(), "EGLL", "icao", nil)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "EGLL", got.AirportICAO)
@@ -147,7 +148,7 @@ func TestGetAirportDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportDelays("EGLL", "icao", &date)
+		got, err := newTestClient(srv.URL).GetAirportDelays(context.Background(), "EGLL", "icao", &date)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "EGLL", got.AirportICAO)
@@ -160,7 +161,7 @@ func TestGetAirportDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportDelays("ZZZ", "icao", nil)
+		_, err := newTestClient(srv.URL).GetAirportDelays(context.Background(), "ZZZ", "icao", nil)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -173,7 +174,7 @@ func TestGetAirportDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportDelays("EGLL", "icao", nil)
+		_, err := newTestClient(srv.URL).GetAirportDelays(context.Background(), "EGLL", "icao", nil)
 		require.Error(t, err)
 	})
 }
@@ -198,7 +199,7 @@ func TestGetAirportDelaysInRange(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportDelaysInRange("EGLL", "icao", dateFrom, dateTo)
+		got, err := newTestClient(srv.URL).GetAirportDelaysInRange(context.Background(), "EGLL", "icao", dateFrom, dateTo)
 		require.NoError(t, err)
 		require.Len(t, got, 2)
 		assert.Equal(t, "EGLL", got[0].AirportICAO)
@@ -214,7 +215,7 @@ func TestGetAirportDelaysInRange(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportDelaysInRange("EGLL", "icao", dateFrom, dateTo)
+		got, err := newTestClient(srv.URL).GetAirportDelaysInRange(context.Background(), "EGLL", "icao", dateFrom, dateTo)
 		require.NoError(t, err)
 		assert.Empty(t, got)
 	})
@@ -229,7 +230,7 @@ func TestGetAirportDelaysInRange(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportDelaysInRange("EGLL", "icao", dateFrom, dateTo)
+		_, err := newTestClient(srv.URL).GetAirportDelaysInRange(context.Background(), "EGLL", "icao", dateFrom, dateTo)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -245,7 +246,7 @@ func TestGetAirportDelaysInRange(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportDelaysInRange("EGLL", "icao", dateFrom, dateTo)
+		_, err := newTestClient(srv.URL).GetAirportDelaysInRange(context.Background(), "EGLL", "icao", dateFrom, dateTo)
 		require.Error(t, err)
 	})
 }
@@ -274,7 +275,7 @@ func TestGetAirportRoutes(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportRoutes("LHR", "iata")
+		got, err := newTestClient(srv.URL).GetAirportRoutes(context.Background(), "LHR", "iata")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		require.Len(t, got.Routes, 1)
@@ -289,7 +290,7 @@ func TestGetAirportRoutes(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportRoutes("LHR", "iata")
+		got, err := newTestClient(srv.URL).GetAirportRoutes(context.Background(), "LHR", "iata")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Empty(t, got.Routes)
@@ -302,7 +303,7 @@ func TestGetAirportRoutes(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportRoutes("LHR", "iata")
+		_, err := newTestClient(srv.URL).GetAirportRoutes(context.Background(), "LHR", "iata")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -315,7 +316,7 @@ func TestGetAirportRoutes(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportRoutes("LHR", "iata")
+		_, err := newTestClient(srv.URL).GetAirportRoutes(context.Background(), "LHR", "iata")
 		require.Error(t, err)
 	})
 }
@@ -339,7 +340,7 @@ func TestGetAirportRoutesByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportRoutesByDate("EGLL", "icao", date)
+		got, err := newTestClient(srv.URL).GetAirportRoutesByDate(context.Background(), "EGLL", "icao", date)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		require.Len(t, got.Routes, 1)
@@ -355,7 +356,7 @@ func TestGetAirportRoutesByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportRoutesByDate("EGLL", "icao", date)
+		_, err := newTestClient(srv.URL).GetAirportRoutesByDate(context.Background(), "EGLL", "icao", date)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -370,7 +371,7 @@ func TestGetAirportRoutesByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportRoutesByDate("EGLL", "icao", date)
+		_, err := newTestClient(srv.URL).GetAirportRoutesByDate(context.Background(), "EGLL", "icao", date)
 		require.Error(t, err)
 	})
 }
@@ -391,7 +392,7 @@ func TestGetGlobalDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetGlobalDelays()
+		got, err := newTestClient(srv.URL).GetGlobalDelays(context.Background())
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "GLOBAL", got.AirportICAO)
@@ -404,7 +405,7 @@ func TestGetGlobalDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGlobalDelays()
+		_, err := newTestClient(srv.URL).GetGlobalDelays(context.Background())
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -418,7 +419,7 @@ func TestGetGlobalDelays(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGlobalDelays()
+		_, err := newTestClient(srv.URL).GetGlobalDelays(context.Background())
 		require.Error(t, err)
 	})
 }
@@ -440,7 +441,7 @@ func TestGetGlobalDelaysByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetGlobalDelaysByDate(date)
+		got, err := newTestClient(srv.URL).GetGlobalDelaysByDate(context.Background(), date)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "GLOBAL", got.AirportICAO)
@@ -455,7 +456,7 @@ func TestGetGlobalDelaysByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGlobalDelaysByDate(date)
+		_, err := newTestClient(srv.URL).GetGlobalDelaysByDate(context.Background(), date)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -470,7 +471,7 @@ func TestGetGlobalDelaysByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetGlobalDelaysByDate(date)
+		_, err := newTestClient(srv.URL).GetGlobalDelaysByDate(context.Background(), date)
 		require.Error(t, err)
 	})
 }
@@ -492,7 +493,7 @@ func TestGetFlightDelayStatistics(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightDelayStatistics("BA123")
+		got, err := newTestClient(srv.URL).GetFlightDelayStatistics(context.Background(), "BA123")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "EGLL", got.AirportICAO)
@@ -506,7 +507,7 @@ func TestGetFlightDelayStatistics(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightDelayStatistics("XX999")
+		_, err := newTestClient(srv.URL).GetFlightDelayStatistics(context.Background(), "XX999")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -520,7 +521,7 @@ func TestGetFlightDelayStatistics(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightDelayStatistics("BA123")
+		_, err := newTestClient(srv.URL).GetFlightDelayStatistics(context.Background(), "BA123")
 		require.Error(t, err)
 	})
 }

@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"time"
 
 	"github.com/aviation-tragic-au/aerodatabox-client/model"
@@ -58,7 +59,7 @@ func (e EndpointStatistical) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetAirportDelays retrieves the delays of an airport - TIER 3
-func (c *Client) GetAirportDelays(code, codeType string, dateLocal *time.Time) (*model.AirportDelayContract, error) {
+func (c *Client) GetAirportDelays(ctx context.Context, code, codeType string, dateLocal *time.Time) (*model.AirportDelayContract, error) {
 	var url string
 	var err error
 	if dateLocal != nil {
@@ -77,7 +78,7 @@ func (c *Client) GetAirportDelays(code, codeType string, dateLocal *time.Time) (
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +91,7 @@ func (c *Client) GetAirportDelays(code, codeType string, dateLocal *time.Time) (
 }
 
 // GetAirportDelaysInRange retrieves the delays of an airport within a given date range - TIER 3
-func (c *Client) GetAirportDelaysInRange(code, codeType string, dateFromLocal, dateToLocal time.Time) ([]*model.AirportDelayContract, error) {
+func (c *Client) GetAirportDelaysInRange(ctx context.Context, code, codeType string, dateFromLocal, dateToLocal time.Time) ([]*model.AirportDelayContract, error) {
 	url, err := EndpointStatisticalAirportDelaysByDateRange.Replace(map[string]string{
 		"codeType": codeType,
 		"code":     code,
@@ -101,7 +102,7 @@ func (c *Client) GetAirportDelaysInRange(code, codeType string, dateFromLocal, d
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +114,7 @@ func (c *Client) GetAirportDelaysInRange(code, codeType string, dateFromLocal, d
 }
 
 // GetAirportRoutes retrieves the daily route statistics of an airport - TIER 3
-func (c *Client) GetAirportRoutes(code, codeType string) (*model.DailyRouteStatContract, error) {
+func (c *Client) GetAirportRoutes(ctx context.Context, code, codeType string) (*model.DailyRouteStatContract, error) {
 	url, err := EndpointStatisticalAirportRouteStatistics.Replace(map[string]string{
 		"codeType": codeType,
 		"code":     code,
@@ -121,7 +122,7 @@ func (c *Client) GetAirportRoutes(code, codeType string) (*model.DailyRouteStatC
 	if err != nil {
 		return nil, err
 	}
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (c *Client) GetAirportRoutes(code, codeType string) (*model.DailyRouteStatC
 }
 
 // GetAirportRoutesByDate retrieves the daily route statistics of an airport for a specific date - TIER 3
-func (c *Client) GetAirportRoutesByDate(code, codeType string, dateLocal time.Time) (*model.DailyRouteStatContract, error) {
+func (c *Client) GetAirportRoutesByDate(ctx context.Context, code, codeType string, dateLocal time.Time) (*model.DailyRouteStatContract, error) {
 	url, err := EndpointStatisticalAirportRouteStatisticsByDate.Replace(map[string]string{
 		"codeType":  codeType,
 		"code":      code,
@@ -143,7 +144,7 @@ func (c *Client) GetAirportRoutesByDate(code, codeType string, dateLocal time.Ti
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -155,9 +156,9 @@ func (c *Client) GetAirportRoutesByDate(code, codeType string, dateLocal time.Ti
 }
 
 // GetGlobalDelays retrieves the delays of an airport - TIER 3
-func (c *Client) GetGlobalDelays() (*model.AirportDelayContract, error) {
+func (c *Client) GetGlobalDelays(ctx context.Context) (*model.AirportDelayContract, error) {
 	url := EndpointStatisticalGlobalDelaysCurrent.String()
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +170,7 @@ func (c *Client) GetGlobalDelays() (*model.AirportDelayContract, error) {
 }
 
 // GetGlobalDelaysByDate retrieves the delays of an airport for a specific date - TIER 3
-func (c *Client) GetGlobalDelaysByDate(dateUtc time.Time) (*model.AirportDelayContract, error) {
+func (c *Client) GetGlobalDelaysByDate(ctx context.Context, dateUtc time.Time) (*model.AirportDelayContract, error) {
 	url, err := EndpointStatisticalGlobalDelaysByDate.Replace(map[string]string{
 		"dateUtc": dateUtc.Format("2006-01-02T15:04:05"),
 	})
@@ -177,7 +178,7 @@ func (c *Client) GetGlobalDelaysByDate(dateUtc time.Time) (*model.AirportDelayCo
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +190,7 @@ func (c *Client) GetGlobalDelaysByDate(dateUtc time.Time) (*model.AirportDelayCo
 }
 
 // GetFlightDelayStatistics retrieves the flight delay statistics of a flight - TIER 3
-func (c *Client) GetFlightDelayStatistics(number string) (*model.FlightDelayContract, error) {
+func (c *Client) GetFlightDelayStatistics(ctx context.Context, number string) (*model.FlightDelayContract, error) {
 	url, err := EndpointStatisticalFlightDelayStatistics.Replace(map[string]string{
 		"number": number,
 	})
@@ -197,7 +198,7 @@ func (c *Client) GetFlightDelayStatistics(number string) (*model.FlightDelayCont
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
