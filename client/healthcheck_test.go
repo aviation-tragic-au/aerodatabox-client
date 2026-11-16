@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -91,7 +92,7 @@ func TestGetDataFeedStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetDataFeedStatus("FlightSchedules", false)
+		got, err := newTestClient(srv.URL).GetDataFeedStatus(context.Background(), "FlightSchedules", false)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, model.FeedServiceEnumFlightSchedules, got.Service)
@@ -109,7 +110,7 @@ func TestGetDataFeedStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedStatus("FlightSchedules", true)
+		_, err := newTestClient(srv.URL).GetDataFeedStatus(context.Background(), "FlightSchedules", true)
 		require.NoError(t, err)
 	})
 
@@ -119,7 +120,7 @@ func TestGetDataFeedStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedStatus("FlightSchedules", false)
+		_, err := newTestClient(srv.URL).GetDataFeedStatus(context.Background(), "FlightSchedules", false)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -132,7 +133,7 @@ func TestGetDataFeedStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedStatus("FlightSchedules", false)
+		_, err := newTestClient(srv.URL).GetDataFeedStatus(context.Background(), "FlightSchedules", false)
 		require.Error(t, err)
 	})
 }
@@ -160,7 +161,7 @@ func TestGetDataFeedStatusByICAO(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetDataFeedStatusByICAO("EGLL")
+		got, err := newTestClient(srv.URL).GetDataFeedStatusByICAO(context.Background(), "EGLL")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, model.FeedServiceStatusOK, got.FlightSchedulesFeed.Status)
@@ -173,7 +174,7 @@ func TestGetDataFeedStatusByICAO(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedStatusByICAO("ZZZZ")
+		_, err := newTestClient(srv.URL).GetDataFeedStatusByICAO(context.Background(), "ZZZZ")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -186,7 +187,7 @@ func TestGetDataFeedStatusByICAO(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedStatusByICAO("EGLL")
+		_, err := newTestClient(srv.URL).GetDataFeedStatusByICAO(context.Background(), "EGLL")
 		require.Error(t, err)
 	})
 }
@@ -208,7 +209,7 @@ func TestGetDataFeedSupportedAirports(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetDataFeedSupportedAirports("FlightSchedules")
+		got, err := newTestClient(srv.URL).GetDataFeedSupportedAirports(context.Background(), "FlightSchedules")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, int64(3), got.Count)
@@ -225,7 +226,7 @@ func TestGetDataFeedSupportedAirports(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetDataFeedSupportedAirports("AdsbUpdates")
+		got, err := newTestClient(srv.URL).GetDataFeedSupportedAirports(context.Background(), "AdsbUpdates")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Empty(t, got.Items)
@@ -237,7 +238,7 @@ func TestGetDataFeedSupportedAirports(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedSupportedAirports("FlightSchedules")
+		_, err := newTestClient(srv.URL).GetDataFeedSupportedAirports(context.Background(), "FlightSchedules")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -250,7 +251,7 @@ func TestGetDataFeedSupportedAirports(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetDataFeedSupportedAirports("FlightSchedules")
+		_, err := newTestClient(srv.URL).GetDataFeedSupportedAirports(context.Background(), "FlightSchedules")
 		require.Error(t, err)
 	})
 }

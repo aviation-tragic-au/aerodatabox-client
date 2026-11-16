@@ -15,6 +15,8 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
+
 	"github.com/aviation-tragic-au/aerodatabox-client/model"
 )
 
@@ -40,7 +42,7 @@ func (e EndpointIndustry) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetFAALADDAircraftStatus retrieves the status of a FAA LADD aircraft - TIER 3
-func (c *Client) GetFAALADDAircraftStatus(id string) (*model.FAALADDAircraftStatusContract, error) {
+func (c *Client) GetFAALADDAircraftStatus(ctx context.Context, id string) (*model.FAALADDAircraftStatusContract, error) {
 	url, err := EndpointIndustryFAALADDAircraftStatus.Replace(map[string]string{
 		"id": id,
 	})
@@ -48,7 +50,7 @@ func (c *Client) GetFAALADDAircraftStatus(id string) (*model.FAALADDAircraftStat
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}

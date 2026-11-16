@@ -3,7 +3,9 @@ package model
 // This file contains models related to the Miscellaneous API endpoints for Aerodatabox
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 )
 
@@ -145,6 +147,16 @@ type APIError struct {
 	StatusCode int     `json:"-"`
 	Message    string  `json:"message"`
 	Details    *string `json:"details"`
+}
+
+// ErrNoData means AeroDataBox has nothing for the request: it answered 204
+// or an empty body, or 404. It doesn't cover every airport or flight.
+var ErrNoData = errors.New("aerodatabox: no data")
+
+// Is makes a 404 match ErrNoData under errors.Is, so callers can treat
+// "not found" and "nothing to report" alike.
+func (e *APIError) Is(target error) bool {
+	return target == ErrNoData && e.StatusCode == http.StatusNotFound
 }
 
 // Error implements the error interface

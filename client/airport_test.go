@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -91,7 +92,7 @@ func TestGetAirportByCode_QueryParams(t *testing.T) {
 	defer srv.Close()
 
 	c := newTestClient(srv.URL)
-	_, err := c.GetAirportByCode("EGLL", "icao", &boolTrue, &boolTrue)
+	_, err := c.GetAirportByCode(context.Background(), "EGLL", "icao", &boolTrue, &boolTrue)
 	require.NoError(t, err)
 }
 
@@ -107,7 +108,7 @@ func TestGetAirportByCode(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportByCode("LHR", "iata", nil, nil)
+		got, err := newTestClient(srv.URL).GetAirportByCode(context.Background(), "LHR", "iata", nil, nil)
 		require.NoError(t, err)
 		assert.Equal(t, "Heathrow", got.Name)
 		assert.Equal(t, "GB", got.CountryCode)
@@ -120,7 +121,7 @@ func TestGetAirportByCode(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByCode("ZZZ", "icao", nil, nil)
+		_, err := newTestClient(srv.URL).GetAirportByCode(context.Background(), "ZZZ", "icao", nil, nil)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -133,7 +134,7 @@ func TestGetAirportByCode(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByCode("LHR", "iata", nil, nil)
+		_, err := newTestClient(srv.URL).GetAirportByCode(context.Background(), "LHR", "iata", nil, nil)
 		require.Error(t, err)
 	})
 }
@@ -150,7 +151,7 @@ func TestGetAirportRunways(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportRunways("EGLL", "icao")
+		got, err := newTestClient(srv.URL).GetAirportRunways(context.Background(), "EGLL", "icao")
 		require.NoError(t, err)
 		require.Len(t, got, 2)
 		assert.Equal(t, "09L/27R", got[0].Name)
@@ -163,7 +164,7 @@ func TestGetAirportRunways(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportRunways("BAD", "icao")
+		_, err := newTestClient(srv.URL).GetAirportRunways(context.Background(), "BAD", "icao")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -188,7 +189,7 @@ func TestGetAirportByLocation(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportByLocation(51.477, -0.461, 5, 50, true)
+		got, err := newTestClient(srv.URL).GetAirportByLocation(context.Background(), 51.477, -0.461, 5, 50, true)
 		require.NoError(t, err)
 		assert.Equal(t, int64(1), got.Count)
 	})
@@ -201,7 +202,7 @@ func TestGetAirportByLocation(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByLocation(51.477, -0.461, 5, 50, false)
+		_, err := newTestClient(srv.URL).GetAirportByLocation(context.Background(), 51.477, -0.461, 5, 50, false)
 		require.NoError(t, err)
 	})
 
@@ -212,7 +213,7 @@ func TestGetAirportByLocation(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByLocation(0, 0, 5, 50, false)
+		_, err := newTestClient(srv.URL).GetAirportByLocation(context.Background(), 0, 0, 5, 50, false)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -236,7 +237,7 @@ func TestGetAirportByIP(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportByIP("8.8.8.8", 10, 100, true)
+		got, err := newTestClient(srv.URL).GetAirportByIP(context.Background(), "8.8.8.8", 10, 100, true)
 		require.NoError(t, err)
 		assert.Equal(t, int64(2), got.Count)
 	})
@@ -248,7 +249,7 @@ func TestGetAirportByIP(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByIP("not-an-ip", 5, 50, false)
+		_, err := newTestClient(srv.URL).GetAirportByIP(context.Background(), "not-an-ip", 5, 50, false)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -276,7 +277,7 @@ func TestGetAirportByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetAirportByTerm("heathrow", nil, false, false)
+		got, err := newTestClient(srv.URL).GetAirportByTerm(context.Background(), "heathrow", nil, false, false)
 		require.NoError(t, err)
 		assert.Equal(t, int64(1), got.Count)
 		assert.Equal(t, "London Heathrow", got.Items[0].Name)
@@ -293,7 +294,7 @@ func TestGetAirportByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByTerm("LHR", &limit, true, true)
+		_, err := newTestClient(srv.URL).GetAirportByTerm(context.Background(), "LHR", &limit, true, true)
 		require.NoError(t, err)
 	})
 
@@ -304,7 +305,7 @@ func TestGetAirportByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByTerm("london", nil, false, false)
+		_, err := newTestClient(srv.URL).GetAirportByTerm(context.Background(), "london", nil, false, false)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -317,7 +318,7 @@ func TestGetAirportByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetAirportByTerm("london", nil, false, false)
+		_, err := newTestClient(srv.URL).GetAirportByTerm(context.Background(), "london", nil, false, false)
 		require.Error(t, err)
 	})
 }

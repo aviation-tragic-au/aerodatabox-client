@@ -15,6 +15,8 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
+
 	"github.com/aviation-tragic-au/aerodatabox-client/model"
 	"github.com/google/go-querystring/query"
 )
@@ -51,7 +53,7 @@ func (e EndpointAircraft) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetSingleAircraft retrieves a single aircraft by its registration or ICAO code - TIER 1
-func (c *Client) GetSingleAircraft(searchBy, searchParameter string, withRegistrations, withImage *bool) (*model.AircraftContract, error) {
+func (c *Client) GetSingleAircraft(ctx context.Context, searchBy, searchParameter string, withRegistrations, withImage *bool) (*model.AircraftContract, error) {
 	url, err := EndpointAircraftSearchSingle.Replace(map[string]string{
 		"searchBy":        searchBy,
 		"searchParameter": searchParameter,
@@ -66,7 +68,7 @@ func (c *Client) GetSingleAircraft(searchBy, searchParameter string, withRegistr
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +82,7 @@ func (c *Client) GetSingleAircraft(searchBy, searchParameter string, withRegistr
 }
 
 // GetAircraft retrieves a list of aircraft by their registration or ICAO code.
-func (c *Client) GetAircraft(searchBy, searchParameter string, withRegistrations, withImage *bool) ([]*model.AircraftContract, error) {
+func (c *Client) GetAircraft(ctx context.Context, searchBy, searchParameter string, withRegistrations, withImage *bool) ([]*model.AircraftContract, error) {
 	url, err := EndpointAircraftSearchAll.Replace(map[string]string{
 		"searchBy":        searchBy,
 		"searchParameter": searchParameter,
@@ -94,7 +96,7 @@ func (c *Client) GetAircraft(searchBy, searchParameter string, withRegistrations
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +110,7 @@ func (c *Client) GetAircraft(searchBy, searchParameter string, withRegistrations
 }
 
 // GetAircraftHistory retrieves the registration history of an aircraft.
-func (c *Client) GetAircraftHistory(searchBy, searchParameter string) (*model.AircraftHistory, error) {
+func (c *Client) GetAircraftHistory(ctx context.Context, searchBy, searchParameter string) (*model.AircraftHistory, error) {
 	url, err := EndpointAircraftRegoHistory.Replace(map[string]string{
 		"searchBy":        searchBy,
 		"searchParameter": searchParameter,
@@ -117,7 +119,7 @@ func (c *Client) GetAircraftHistory(searchBy, searchParameter string) (*model.Ai
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +133,7 @@ func (c *Client) GetAircraftHistory(searchBy, searchParameter string) (*model.Ai
 }
 
 // GetAircraftByTerm retrieves aircraft by a search term.
-func (c *Client) GetAircraftByTerm(term string, limit *int64) (*model.StringAircraftContractSearchResultCollectionContract, error) {
+func (c *Client) GetAircraftByTerm(ctx context.Context, term string, limit *int64) (*model.StringAircraftContractSearchResultCollectionContract, error) {
 	url := EndpointAircraftSearchByTerm.String()
 
 	params := model.NewAircraftSearchParams(term, limit)
@@ -140,7 +142,7 @@ func (c *Client) GetAircraftByTerm(term string, limit *int64) (*model.StringAirc
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +156,7 @@ func (c *Client) GetAircraftByTerm(term string, limit *int64) (*model.StringAirc
 }
 
 // GetAirlineFleetByCode retrieves the fleet of an airline by its IATA code.
-func (c *Client) GetAirlineFleetByCode(code string, pageSize, pageOffset *int64, withRegistrations *bool) (*model.AircraftContractPagedCollectionContract, error) {
+func (c *Client) GetAirlineFleetByCode(ctx context.Context, code string, pageSize, pageOffset *int64, withRegistrations *bool) (*model.AircraftContractPagedCollectionContract, error) {
 	url, err := EndpointAirlineFleetByCode.Replace(map[string]string{
 		"code": code,
 	})
@@ -168,7 +170,7 @@ func (c *Client) GetAirlineFleetByCode(code string, pageSize, pageOffset *int64,
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}

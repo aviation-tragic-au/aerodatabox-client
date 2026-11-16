@@ -1,6 +1,10 @@
 package client
 
-import "github.com/aviation-tragic-au/aerodatabox-client/model"
+import (
+	"context"
+
+	"github.com/aviation-tragic-au/aerodatabox-client/model"
+)
 
 //    Copyright 2026 Dean Stalker
 //
@@ -44,7 +48,7 @@ func (e EndpointHealthCheck) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetDataFeedStatus retrieves the status of a data feed - FREE TIER
-func (c *Client) GetDataFeedStatus(service string, withHTTPCode bool) (*model.FeedServiceStatusContract, error) {
+func (c *Client) GetDataFeedStatus(ctx context.Context, service string, withHTTPCode bool) (*model.FeedServiceStatusContract, error) {
 	url, err := EndpointHealthCheckFeedStatusGeneral.Replace(map[string]string{"service": service})
 	if err != nil {
 		return nil, err
@@ -54,7 +58,7 @@ func (c *Client) GetDataFeedStatus(service string, withHTTPCode bool) (*model.Fe
 		url += "?withHttpCode=true"
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -67,13 +71,13 @@ func (c *Client) GetDataFeedStatus(service string, withHTTPCode bool) (*model.Fe
 }
 
 // GetDataFeedStatusByICAO retrieves the status of a data feed for a specific airport - FREE TIER
-func (c *Client) GetDataFeedStatusByICAO(icao string) (*model.AirportFeedServiceStatusContract, error) {
+func (c *Client) GetDataFeedStatusByICAO(ctx context.Context, icao string) (*model.AirportFeedServiceStatusContract, error) {
 	url, err := EndpointHealthCheckFeedStatusData.Replace(map[string]string{"icao": icao})
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -86,13 +90,13 @@ func (c *Client) GetDataFeedStatusByICAO(icao string) (*model.AirportFeedService
 }
 
 // GetDataFeedSupportedAirports retrieves the supported airports for a data feed - FREE TIER
-func (c *Client) GetDataFeedSupportedAirports(service string) (*model.StringCollectionContract, error) {
+func (c *Client) GetDataFeedSupportedAirports(ctx context.Context, service string) (*model.StringCollectionContract, error) {
 	url, err := EndpointHealthCheckAirports.Replace(map[string]string{"service": service})
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}

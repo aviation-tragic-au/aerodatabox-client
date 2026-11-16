@@ -15,6 +15,8 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
+
 	"github.com/aviation-tragic-au/aerodatabox-client/model"
 	"github.com/google/go-querystring/query"
 )
@@ -46,7 +48,7 @@ func (e EndpointAirport) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetAirportByCode retrieves an airport by its IATA or ICAO code. TIER 1
-func (c *Client) GetAirportByCode(code, codeType string, withTime, withRunways *bool) (*model.Airport, error) {
+func (c *Client) GetAirportByCode(ctx context.Context, code, codeType string, withTime, withRunways *bool) (*model.Airport, error) {
 	url, err := EndpointAirportByCode.Replace(map[string]string{
 		"codeType": codeType,
 		"code":     code,
@@ -61,7 +63,7 @@ func (c *Client) GetAirportByCode(code, codeType string, withTime, withRunways *
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +77,7 @@ func (c *Client) GetAirportByCode(code, codeType string, withTime, withRunways *
 }
 
 // GetAirportRunways retrieves the runways of an airport - TIER 1
-func (c *Client) GetAirportRunways(code, codeType string) ([]*model.RunwayContract, error) {
+func (c *Client) GetAirportRunways(ctx context.Context, code, codeType string) ([]*model.RunwayContract, error) {
 	url, err := EndpointAirportRunways.Replace(map[string]string{
 		"codeType": codeType,
 		"code":     code,
@@ -84,7 +86,7 @@ func (c *Client) GetAirportRunways(code, codeType string) ([]*model.RunwayContra
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +100,7 @@ func (c *Client) GetAirportRunways(code, codeType string) ([]*model.RunwayContra
 }
 
 // GetAirportByLocation retrieves airports within a given radius of a location - TIER 2
-func (c *Client) GetAirportByLocation(latitude, longitude float64, limit, radiusKm int64, withFlightInfoOnly bool) (*model.StringListingAirportContractSearchResultCollectionContract, error) {
+func (c *Client) GetAirportByLocation(ctx context.Context, latitude, longitude float64, limit, radiusKm int64, withFlightInfoOnly bool) (*model.StringListingAirportContractSearchResultCollectionContract, error) {
 	url := EndpointAirportSearchByLocation.String()
 
 	params := model.NewAirportLocationParams(latitude, longitude, limit, radiusKm, withFlightInfoOnly)
@@ -107,7 +109,7 @@ func (c *Client) GetAirportByLocation(latitude, longitude float64, limit, radius
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +123,7 @@ func (c *Client) GetAirportByLocation(latitude, longitude float64, limit, radius
 }
 
 // GetAirportByIP retrieves airports within a given radius of an IP address - TIER 2
-func (c *Client) GetAirportByIP(q string, limit, radiusKM int64, withFlightInfoOnly bool) (*model.StringListingAirportContractSearchResultCollectionContract, error) {
+func (c *Client) GetAirportByIP(ctx context.Context, q string, limit, radiusKM int64, withFlightInfoOnly bool) (*model.StringListingAirportContractSearchResultCollectionContract, error) {
 	url := EndpointAirportSearchByIP.String()
 
 	params := model.NewAirportIPParams(q, limit, radiusKM, withFlightInfoOnly)
@@ -130,7 +132,7 @@ func (c *Client) GetAirportByIP(q string, limit, radiusKM int64, withFlightInfoO
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +146,7 @@ func (c *Client) GetAirportByIP(q string, limit, radiusKM int64, withFlightInfoO
 }
 
 // GetAirportByTerm retrieves airports by a search term - TIER 2
-func (c *Client) GetAirportByTerm(q string, limit *int64, withFlightInfoOnly, withSearchByCode bool) (*model.StringListingAirportContractSearchResultCollectionContract, error) {
+func (c *Client) GetAirportByTerm(ctx context.Context, q string, limit *int64, withFlightInfoOnly, withSearchByCode bool) (*model.StringListingAirportContractSearchResultCollectionContract, error) {
 	url := EndpointAirportSearchByTerm.String()
 
 	params := model.NewAirportSearchParams(q, limit, withFlightInfoOnly, withSearchByCode)
@@ -153,7 +155,7 @@ func (c *Client) GetAirportByTerm(q string, limit *int64, withFlightInfoOnly, wi
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + v.Encode())
+	req, err := c.getRequest(ctx, url+"?"+v.Encode())
 	if err != nil {
 		return nil, err
 	}

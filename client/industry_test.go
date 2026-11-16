@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -65,7 +66,7 @@ func TestGetFAALADDAircraftStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFAALADDAircraftStatus("N12345")
+		got, err := newTestClient(srv.URL).GetFAALADDAircraftStatus(context.Background(), "N12345")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.Equal(t, "N12345", got.ID)
@@ -90,7 +91,7 @@ func TestGetFAALADDAircraftStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFAALADDAircraftStatus("N99999")
+		got, err := newTestClient(srv.URL).GetFAALADDAircraftStatus(context.Background(), "N99999")
 		require.NoError(t, err)
 		require.NotNil(t, got)
 		assert.True(t, got.IsBlocked)
@@ -104,7 +105,7 @@ func TestGetFAALADDAircraftStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFAALADDAircraftStatus("UNKNOWN")
+		_, err := newTestClient(srv.URL).GetFAALADDAircraftStatus(context.Background(), "UNKNOWN")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -117,7 +118,7 @@ func TestGetFAALADDAircraftStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFAALADDAircraftStatus("N12345")
+		_, err := newTestClient(srv.URL).GetFAALADDAircraftStatus(context.Background(), "N12345")
 		require.Error(t, err)
 	})
 }

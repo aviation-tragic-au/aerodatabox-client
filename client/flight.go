@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -66,7 +67,7 @@ func validateFlightSearchParam(s string) error {
 }
 
 // GetFlightStatus retrieves the status of a flight - TIER 2
-func (c *Client) GetFlightStatus(searchBy, searchParameter string, dateLocalRole model.FlightDirection, withAircraftImage, withLocation, withFlightPlan bool) ([]*model.FlightContract, error) {
+func (c *Client) GetFlightStatus(ctx context.Context, searchBy, searchParameter string, dateLocalRole model.FlightDirection, withAircraftImage, withLocation, withFlightPlan bool) ([]*model.FlightContract, error) {
 	if err := validateFlightSearchParam(searchParameter); err != nil {
 		return nil, err
 	}
@@ -85,7 +86,7 @@ func (c *Client) GetFlightStatus(searchBy, searchParameter string, dateLocalRole
 		return nil, err
 	}
 
-	req, err := c.getRequest(appendQuery(url, v.Encode()))
+	req, err := c.getRequest(ctx, appendQuery(url, v.Encode()))
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +99,7 @@ func (c *Client) GetFlightStatus(searchBy, searchParameter string, dateLocalRole
 }
 
 // GetFlightStatusByDate retrieves the status of a flight for a specific date - TIER 2
-func (c *Client) GetFlightStatusByDate(searchBy, searchParameter string, dateLocal time.Time, dateLocalRole model.FlightDirection, withAircraftImage, withLocation, withFlightPlan bool) ([]*model.FlightContract, error) {
+func (c *Client) GetFlightStatusByDate(ctx context.Context, searchBy, searchParameter string, dateLocal time.Time, dateLocalRole model.FlightDirection, withAircraftImage, withLocation, withFlightPlan bool) ([]*model.FlightContract, error) {
 	if err := validateFlightSearchParam(searchParameter); err != nil {
 		return nil, err
 	}
@@ -118,7 +119,7 @@ func (c *Client) GetFlightStatusByDate(searchBy, searchParameter string, dateLoc
 		return nil, err
 	}
 
-	req, err := c.getRequest(appendQuery(url, v.Encode()))
+	req, err := c.getRequest(ctx, appendQuery(url, v.Encode()))
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +132,7 @@ func (c *Client) GetFlightStatusByDate(searchBy, searchParameter string, dateLoc
 }
 
 // GetFlightScheduleHistory retrieves the schedule history of a flight - TIER 2
-func (c *Client) GetFlightScheduleHistory(searchBy, searchParameter string, dateFromLocal, dateToLocal time.Time, dateLocalRole *model.FlightDirection) ([]*model.FlightContract, error) {
+func (c *Client) GetFlightScheduleHistory(ctx context.Context, searchBy, searchParameter string, dateFromLocal, dateToLocal time.Time, dateLocalRole *model.FlightDirection) ([]*model.FlightContract, error) {
 	if err := validateFlightSearchParam(searchParameter); err != nil {
 		return nil, err
 	}
@@ -155,7 +156,7 @@ func (c *Client) GetFlightScheduleHistory(searchBy, searchParameter string, date
 		url = appendQuery(url, v.Encode())
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +169,7 @@ func (c *Client) GetFlightScheduleHistory(searchBy, searchParameter string, date
 }
 
 // GetFlightDepartureDates retrieves the departure dates of a flight - TIER 2
-func (c *Client) GetFlightDepartureDates(searchBy, searchParameter string) ([]string, error) {
+func (c *Client) GetFlightDepartureDates(ctx context.Context, searchBy, searchParameter string) ([]string, error) {
 	if err := validateFlightSearchParam(searchParameter); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (c *Client) GetFlightDepartureDates(searchBy, searchParameter string) ([]st
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +195,7 @@ func (c *Client) GetFlightDepartureDates(searchBy, searchParameter string) ([]st
 }
 
 // GetFlightDepartureDateRange retrieves the departure dates of a flight within a specific date range - TIER 2
-func (c *Client) GetFlightDepartureDateRange(searchBy, searchParameter string, fromLocal, toLocal time.Time) ([]string, error) {
+func (c *Client) GetFlightDepartureDateRange(ctx context.Context, searchBy, searchParameter string, fromLocal, toLocal time.Time) ([]string, error) {
 	if err := validateFlightSearchParam(searchParameter); err != nil {
 		return nil, err
 	}
@@ -209,7 +210,7 @@ func (c *Client) GetFlightDepartureDateRange(searchBy, searchParameter string, f
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -222,7 +223,7 @@ func (c *Client) GetFlightDepartureDateRange(searchBy, searchParameter string, f
 }
 
 // GetFlightInformationDepartureByLocalTime retrieves the departure information of a flight based on a local time - TIER 2
-func (c *Client) GetFlightInformationDepartureByLocalTime(codeType, code string, fromLocal, toLocal time.Time, direction *model.FlightDirection, withLeg, withCancelled, withCodeshared, withCargo, withPrivate, withLocation *bool) (*model.AirportFidsContract, error) {
+func (c *Client) GetFlightInformationDepartureByLocalTime(ctx context.Context, codeType, code string, fromLocal, toLocal time.Time, direction *model.FlightDirection, withLeg, withCancelled, withCodeshared, withCargo, withPrivate, withLocation *bool) (*model.AirportFidsContract, error) {
 	url, err := EndpointFlightFIDSLocalTime.Replace(map[string]string{
 		"codeType":  codeType,
 		"code":      code,
@@ -239,7 +240,7 @@ func (c *Client) GetFlightInformationDepartureByLocalTime(codeType, code string,
 		return nil, err
 	}
 
-	req, err := c.getRequest(appendQuery(url, v.Encode()))
+	req, err := c.getRequest(ctx, appendQuery(url, v.Encode()))
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (c *Client) GetFlightInformationDepartureByLocalTime(codeType, code string,
 }
 
 // GetFlightInformationDepartureByRelativeTime retrieves the departure information of a flight based on a relative time offset - TIER 2
-func (c *Client) GetFlightInformationDepartureByRelativeTime(codeType, code string, direction *model.FlightDirection, withLeg, withCancelled, withCodeshared, withCargo, withPrivate, withLocation *bool, offsetMinutes, durationMinutes *int64) (*model.AirportFidsContract, error) {
+func (c *Client) GetFlightInformationDepartureByRelativeTime(ctx context.Context, codeType, code string, direction *model.FlightDirection, withLeg, withCancelled, withCodeshared, withCargo, withPrivate, withLocation *bool, offsetMinutes, durationMinutes *int64) (*model.AirportFidsContract, error) {
 	url, err := EndpointFlightFIDSRelativeTime.Replace(map[string]string{
 		"codeType": codeType,
 		"code":     code,
@@ -267,7 +268,7 @@ func (c *Client) GetFlightInformationDepartureByRelativeTime(codeType, code stri
 		return nil, err
 	}
 
-	req, err := c.getRequest(appendQuery(url, v.Encode()))
+	req, err := c.getRequest(ctx, appendQuery(url, v.Encode()))
 	if err != nil {
 		return nil, err
 	}
@@ -280,7 +281,7 @@ func (c *Client) GetFlightInformationDepartureByRelativeTime(codeType, code stri
 }
 
 // SearchFlightByTerm searches for flights by a given search term - TIER 2
-func (c *Client) SearchFlightByTerm(term string, limit int64) (*model.StringFlightSearchItemContractSearchResultCollectionContract, error) {
+func (c *Client) SearchFlightByTerm(ctx context.Context, term string, limit int64) (*model.StringFlightSearchItemContractSearchResultCollectionContract, error) {
 	url := EndpointFlightSearchByTerm.String()
 
 	params := model.NewFlightSearchByTermParams(term, &limit)
@@ -289,7 +290,7 @@ func (c *Client) SearchFlightByTerm(term string, limit int64) (*model.StringFlig
 		return nil, err
 	}
 
-	req, err := c.getRequest(appendQuery(url, v.Encode()))
+	req, err := c.getRequest(ctx, appendQuery(url, v.Encode()))
 	if err != nil {
 		return nil, err
 	}

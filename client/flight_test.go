@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -95,14 +96,14 @@ func TestGetFlightStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightStatus("Number", "BA123", model.FlightDirectionArrival, true, true, false)
+		got, err := newTestClient(srv.URL).GetFlightStatus(context.Background(), "Number", "BA123", model.FlightDirectionArrival, true, true, false)
 		require.NoError(t, err)
 		require.Len(t, got, 1)
 		assert.Equal(t, "BA123", got[0].Number)
 	})
 
 	t.Run("rejects searchParameter longer than 10 chars", func(t *testing.T) {
-		_, err := newTestClient("http://unused").GetFlightStatus("Number", "TOOLONGPARAM", model.FlightDirectionArrival, false, false, false)
+		_, err := newTestClient("http://unused").GetFlightStatus(context.Background(), "Number", "TOOLONGPARAM", model.FlightDirectionArrival, false, false, false)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "exceeds maximum length")
 	})
@@ -114,7 +115,7 @@ func TestGetFlightStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightStatus("Number", "XX999", model.FlightDirectionArrival, false, false, false)
+		_, err := newTestClient(srv.URL).GetFlightStatus(context.Background(), "Number", "XX999", model.FlightDirectionArrival, false, false, false)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -128,7 +129,7 @@ func TestGetFlightStatus(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightStatus("Number", "BA123", model.FlightDirectionArrival, false, false, false)
+		_, err := newTestClient(srv.URL).GetFlightStatus(context.Background(), "Number", "BA123", model.FlightDirectionArrival, false, false, false)
 		require.Error(t, err)
 	})
 }
@@ -150,7 +151,7 @@ func TestGetFlightStatusByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightStatusByDate("Number", "BA123", date, model.FlightDirectionDeparture, true, false, false)
+		got, err := newTestClient(srv.URL).GetFlightStatusByDate(context.Background(), "Number", "BA123", date, model.FlightDirectionDeparture, true, false, false)
 		require.NoError(t, err)
 		require.Len(t, got, 1)
 		assert.Equal(t, "BA123", got[0].Number)
@@ -163,7 +164,7 @@ func TestGetFlightStatusByDate(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightStatusByDate("Number", "BA123", date, model.FlightDirectionArrival, false, false, false)
+		_, err := newTestClient(srv.URL).GetFlightStatusByDate(context.Background(), "Number", "BA123", date, model.FlightDirectionArrival, false, false, false)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -186,7 +187,7 @@ func TestGetFlightScheduleHistory(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightScheduleHistory("Number", "BA123", dateFrom, dateTo, nil)
+		got, err := newTestClient(srv.URL).GetFlightScheduleHistory(context.Background(), "Number", "BA123", dateFrom, dateTo, nil)
 		require.NoError(t, err)
 		require.Len(t, got, 1)
 		assert.Equal(t, "BA123", got[0].Number)
@@ -201,7 +202,7 @@ func TestGetFlightScheduleHistory(t *testing.T) {
 		defer srv.Close()
 
 		dir := model.FlightDirection(model.FlightDirectionArrival)
-		_, err := newTestClient(srv.URL).GetFlightScheduleHistory("Number", "BA123", dateFrom, dateTo, &dir)
+		_, err := newTestClient(srv.URL).GetFlightScheduleHistory(context.Background(), "Number", "BA123", dateFrom, dateTo, &dir)
 		require.NoError(t, err)
 	})
 
@@ -212,7 +213,7 @@ func TestGetFlightScheduleHistory(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightScheduleHistory("Number", "BA123", dateFrom, dateTo, nil)
+		_, err := newTestClient(srv.URL).GetFlightScheduleHistory(context.Background(), "Number", "BA123", dateFrom, dateTo, nil)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -231,7 +232,7 @@ func TestGetFlightDepartureDates(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightDepartureDates("Number", "BA123")
+		got, err := newTestClient(srv.URL).GetFlightDepartureDates(context.Background(), "Number", "BA123")
 		require.NoError(t, err)
 		require.Len(t, got, 2)
 		assert.Equal(t, "2024-01-15", got[0])
@@ -244,7 +245,7 @@ func TestGetFlightDepartureDates(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightDepartureDates("Number", "XX999")
+		_, err := newTestClient(srv.URL).GetFlightDepartureDates(context.Background(), "Number", "XX999")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -266,7 +267,7 @@ func TestGetFlightDepartureDateRange(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightDepartureDateRange("Number", "BA123", from, to)
+		got, err := newTestClient(srv.URL).GetFlightDepartureDateRange(context.Background(), "Number", "BA123", from, to)
 		require.NoError(t, err)
 		assert.Len(t, got, 3)
 	})
@@ -278,7 +279,7 @@ func TestGetFlightDepartureDateRange(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightDepartureDateRange("Number", "BA123", from, to)
+		_, err := newTestClient(srv.URL).GetFlightDepartureDateRange(context.Background(), "Number", "BA123", from, to)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -308,7 +309,7 @@ func TestGetFlightInformationDepartureByLocalTime(t *testing.T) {
 		defer srv.Close()
 
 		dir := model.FlightDirection(model.FlightDirectionBoth)
-		got, err := newTestClient(srv.URL).GetFlightInformationDepartureByLocalTime(
+		got, err := newTestClient(srv.URL).GetFlightInformationDepartureByLocalTime(context.Background(),
 			"icao", "EGLL", fromLocal, toLocal,
 			&dir, &boolTrue, &boolTrue, nil, nil, nil, nil,
 		)
@@ -327,7 +328,7 @@ func TestGetFlightInformationDepartureByLocalTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByLocalTime(
+		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByLocalTime(context.Background(),
 			"icao", "EGLL", fromLocal, toLocal,
 			nil, nil, nil, nil, nil, nil, nil,
 		)
@@ -341,7 +342,7 @@ func TestGetFlightInformationDepartureByLocalTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByLocalTime(
+		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByLocalTime(context.Background(),
 			"icao", "EGLL", fromLocal, toLocal,
 			nil, nil, nil, nil, nil, nil, nil,
 		)
@@ -373,7 +374,7 @@ func TestGetFlightInformationDepartureByRelativeTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetFlightInformationDepartureByRelativeTime(
+		got, err := newTestClient(srv.URL).GetFlightInformationDepartureByRelativeTime(context.Background(),
 			"iata", "LHR",
 			nil, nil, nil, nil, &boolFalse, nil, nil,
 			&offset, &duration,
@@ -393,7 +394,7 @@ func TestGetFlightInformationDepartureByRelativeTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByRelativeTime(
+		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByRelativeTime(context.Background(),
 			"iata", "LHR",
 			nil, nil, nil, nil, nil, nil, nil,
 			nil, nil,
@@ -407,7 +408,7 @@ func TestGetFlightInformationDepartureByRelativeTime(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByRelativeTime(
+		_, err := newTestClient(srv.URL).GetFlightInformationDepartureByRelativeTime(context.Background(),
 			"iata", "LHR",
 			nil, nil, nil, nil, nil, nil, nil, nil, nil,
 		)
@@ -439,7 +440,7 @@ func TestSearchFlightByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).SearchFlightByTerm("BA1", 5)
+		got, err := newTestClient(srv.URL).SearchFlightByTerm(context.Background(), "BA1", 5)
 		require.NoError(t, err)
 		assert.Equal(t, int64(2), got.Count)
 		assert.Equal(t, "BA100", got.Items[0].Number)
@@ -452,7 +453,7 @@ func TestSearchFlightByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).SearchFlightByTerm("B", 10)
+		_, err := newTestClient(srv.URL).SearchFlightByTerm(context.Background(), "B", 10)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -466,7 +467,7 @@ func TestSearchFlightByTerm(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).SearchFlightByTerm("BA1", 5)
+		_, err := newTestClient(srv.URL).SearchFlightByTerm(context.Background(), "BA1", 5)
 		require.Error(t, err)
 	})
 }

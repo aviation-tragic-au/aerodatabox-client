@@ -15,6 +15,8 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
+
 	"github.com/aviation-tragic-au/aerodatabox-client/model"
 )
 
@@ -50,7 +52,7 @@ func (e EndpointFlightAlert) Replace(tokens map[string]string) (string, error) {
 }
 
 // CreateWebhookSubscription creates a new webhook subscription
-func (c *Client) CreateWebhookSubscription(subjectID string, subjectType model.FlightSubscriptionSubjectType, callbackURL string, maxDeliveryRetries *int64) (*model.FlightSubscriberContract, error) {
+func (c *Client) CreateWebhookSubscription(ctx context.Context, subjectID string, subjectType model.FlightSubscriptionSubjectType, callbackURL string, maxDeliveryRetries *int64) (*model.FlightSubscriberContract, error) {
 	endpoint, err := EndpointCreateWebhookSubscription.Replace(map[string]string{
 		"subjectId":   subjectID,
 		"subjectType": subjectType.String(),
@@ -59,7 +61,7 @@ func (c *Client) CreateWebhookSubscription(subjectID string, subjectType model.F
 		return nil, err
 	}
 
-	req, err := c.postRequest(endpoint, &model.FlightSubscriptionBody{
+	req, err := c.postRequest(ctx, endpoint, &model.FlightSubscriptionBody{
 		URL:                callbackURL,
 		MaxDeliveryRetries: maxDeliveryRetries,
 	})
@@ -76,7 +78,7 @@ func (c *Client) CreateWebhookSubscription(subjectID string, subjectType model.F
 }
 
 // GetWebhookSubscription retrieves a webhook subscription by its ID
-func (c *Client) GetWebhookSubscription(subscriptionID string) (*model.FlightSubscriberContract, error) {
+func (c *Client) GetWebhookSubscription(ctx context.Context, subscriptionID string) (*model.FlightSubscriberContract, error) {
 	url, err := EndpointGetWebhookSubscription.Replace(map[string]string{
 		"subscriptionId": subscriptionID,
 	})
@@ -84,7 +86,7 @@ func (c *Client) GetWebhookSubscription(subscriptionID string) (*model.FlightSub
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +100,7 @@ func (c *Client) GetWebhookSubscription(subscriptionID string) (*model.FlightSub
 }
 
 // DeleteWebhookSubscription deletes a webhook subscription by its ID
-func (c *Client) DeleteWebhookSubscription(subscriptionID string) error {
+func (c *Client) DeleteWebhookSubscription(ctx context.Context, subscriptionID string) error {
 	url, err := EndpointDeleteWebhookSubscription.Replace(map[string]string{
 		"subscriptionId": subscriptionID,
 	})
@@ -106,7 +108,7 @@ func (c *Client) DeleteWebhookSubscription(subscriptionID string) error {
 		return err
 	}
 
-	req, err := c.deleteRequest(url)
+	req, err := c.deleteRequest(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -115,9 +117,9 @@ func (c *Client) DeleteWebhookSubscription(subscriptionID string) error {
 }
 
 // ListWebhookSubscriptions lists all webhook subscriptions
-func (c *Client) ListWebhookSubscriptions() ([]*model.FlightSubscriberContract, error) {
+func (c *Client) ListWebhookSubscriptions(ctx context.Context) ([]*model.FlightSubscriberContract, error) {
 	url := EndpointListWebhookSubscriptions.String()
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -129,9 +131,9 @@ func (c *Client) ListWebhookSubscriptions() ([]*model.FlightSubscriberContract, 
 }
 
 // GetWebhookSubscriptionsBalance retrieves the webhook subscription balance
-func (c *Client) GetWebhookSubscriptionsBalance() (*model.FlightSubscriptionBalanceContract, error) {
+func (c *Client) GetWebhookSubscriptionsBalance(ctx context.Context) (*model.FlightSubscriptionBalanceContract, error) {
 	url := EndpointGetWebhookSubscriptionBalance.String()
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -143,9 +145,9 @@ func (c *Client) GetWebhookSubscriptionsBalance() (*model.FlightSubscriptionBala
 }
 
 // RefillWebhookSubscriptionsBalance refills the webhook subscription balance
-func (c *Client) RefillWebhookSubscriptionsBalance(credits int64) (*model.FlightSubscriptionBalanceContract, error) {
+func (c *Client) RefillWebhookSubscriptionsBalance(ctx context.Context, credits int64) (*model.FlightSubscriptionBalanceContract, error) {
 	url := EndpointRefillWebhookSubscriptionBalance.String()
-	req, err := c.postRequest(url, &model.FlightSubscriptionRefillBody{Credits: credits})
+	req, err := c.postRequest(ctx, url, &model.FlightSubscriptionRefillBody{Credits: credits})
 	if err != nil {
 		return nil, err
 	}

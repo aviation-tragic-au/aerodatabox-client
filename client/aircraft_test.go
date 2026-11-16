@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -28,9 +29,7 @@ import (
 
 // newTestClient creates a Client pointed at the given test server URL.
 func newTestClient(serverURL string) *Client {
-	cfg := &model.Config{Host: "api.aerodatabox.com", Key: "test-key"}
-	c, _ := NewClient(zap.NewNop(), cfg)
-	c.URL = serverURL
+	c, _ := NewClient(zap.NewNop(), Config{Host: "api.aerodatabox.com", Key: "test-key", URL: serverURL})
 	return c
 }
 
@@ -105,7 +104,7 @@ func TestGetSingleAircraft_APIError(t *testing.T) {
 	defer server.Close()
 
 	c := newTestClient(server.URL)
-	result, err := c.GetSingleAircraft("reg", "XX-NONE", nil, nil)
+	result, err := c.GetSingleAircraft(context.Background(), "reg", "XX-NONE", nil, nil)
 
 	require.Error(t, err)
 	assert.Nil(t, result)
@@ -127,7 +126,7 @@ func TestGetSingleAircraft_QueryParams(t *testing.T) {
 	defer server.Close()
 
 	c := newTestClient(server.URL)
-	_, err := c.GetSingleAircraft("reg", "G-ABCD", &boolTrue, &boolTrue)
+	_, err := c.GetSingleAircraft(context.Background(), "reg", "G-ABCD", &boolTrue, &boolTrue)
 	require.NoError(t, err)
 }
 
@@ -153,7 +152,7 @@ func TestGetAircraft(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraft("reg", "G-ABCD", &boolTrue, nil)
+		result, err := c.GetAircraft(context.Background(), "reg", "G-ABCD", &boolTrue, nil)
 
 		require.NoError(t, err)
 		require.Len(t, result, 2)
@@ -169,7 +168,7 @@ func TestGetAircraft(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraft("reg", "NONE", nil, nil)
+		result, err := c.GetAircraft(context.Background(), "reg", "NONE", nil, nil)
 
 		require.NoError(t, err)
 		assert.Empty(t, result)
@@ -184,7 +183,7 @@ func TestGetAircraft(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraft("reg", "G-ABCD", nil, nil)
+		result, err := c.GetAircraft(context.Background(), "reg", "G-ABCD", nil, nil)
 
 		require.Error(t, err)
 		assert.Nil(t, result)
@@ -201,7 +200,7 @@ func TestGetAircraft(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraft("reg", "G-ABCD", nil, nil)
+		result, err := c.GetAircraft(context.Background(), "reg", "G-ABCD", nil, nil)
 
 		require.Error(t, err)
 		assert.Nil(t, result)
@@ -229,7 +228,7 @@ func TestGetAircraftHistory(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraftHistory("reg", "G-ABCD")
+		result, err := c.GetAircraftHistory(context.Background(), "reg", "G-ABCD")
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -250,7 +249,7 @@ func TestGetAircraftHistory(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraftHistory("reg", "G-ABCD")
+		result, err := c.GetAircraftHistory(context.Background(), "reg", "G-ABCD")
 
 		require.Error(t, err)
 		assert.Nil(t, result)
@@ -267,7 +266,7 @@ func TestGetAircraftHistory(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraftHistory("reg", "G-ABCD")
+		result, err := c.GetAircraftHistory(context.Background(), "reg", "G-ABCD")
 
 		require.Error(t, err)
 		assert.Nil(t, result)
@@ -298,7 +297,7 @@ func TestGetAircraftByTerm(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraftByTerm("Boeing", nil)
+		result, err := c.GetAircraftByTerm(context.Background(), "Boeing", nil)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -319,7 +318,7 @@ func TestGetAircraftByTerm(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		_, err := c.GetAircraftByTerm("Boeing", &limit)
+		_, err := c.GetAircraftByTerm(context.Background(), "Boeing", &limit)
 		require.NoError(t, err)
 	})
 
@@ -332,7 +331,7 @@ func TestGetAircraftByTerm(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAircraftByTerm("Boeing", nil)
+		result, err := c.GetAircraftByTerm(context.Background(), "Boeing", nil)
 
 		require.Error(t, err)
 		assert.Nil(t, result)
@@ -371,7 +370,7 @@ func TestGetAirlineFleetByCode(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAirlineFleetByCode("BA", &pageSize, &pageOffset, &withRegos)
+		result, err := c.GetAirlineFleetByCode(context.Background(), "BA", &pageSize, &pageOffset, &withRegos)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -392,7 +391,7 @@ func TestGetAirlineFleetByCode(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAirlineFleetByCode("BA", nil, nil, nil)
+		result, err := c.GetAirlineFleetByCode(context.Background(), "BA", nil, nil, nil)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -408,7 +407,7 @@ func TestGetAirlineFleetByCode(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAirlineFleetByCode("XX", nil, nil, nil)
+		result, err := c.GetAirlineFleetByCode(context.Background(), "XX", nil, nil, nil)
 
 		require.Error(t, err)
 		assert.Nil(t, result)
@@ -425,7 +424,7 @@ func TestGetAirlineFleetByCode(t *testing.T) {
 		defer server.Close()
 
 		c := newTestClient(server.URL)
-		result, err := c.GetAirlineFleetByCode("BA", nil, nil, nil)
+		result, err := c.GetAirlineFleetByCode(context.Background(), "BA", nil, nil, nil)
 
 		require.Error(t, err)
 		assert.Nil(t, result)

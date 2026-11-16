@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	neturl "net/url"
 	"strings"
@@ -51,7 +52,7 @@ func (e EndpointMisc) Replace(tokens map[string]string) (string, error) {
 }
 
 // GetAirportCurrentTime retrieves the current time of an airport - TIER 1
-func (c *Client) GetAirportCurrentTime(code, codeType string) (*model.AirportLocalTimeContract, error) {
+func (c *Client) GetAirportCurrentTime(ctx context.Context, code, codeType string) (*model.AirportLocalTimeContract, error) {
 	if err := c.validateCode(codeType, code); err != nil {
 		return nil, err
 	}
@@ -63,7 +64,7 @@ func (c *Client) GetAirportCurrentTime(code, codeType string) (*model.AirportLoc
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +77,7 @@ func (c *Client) GetAirportCurrentTime(code, codeType string) (*model.AirportLoc
 }
 
 // GetAirportSolarTime retrieves the solar time of an airport - TIER 1
-func (c *Client) GetAirportSolarTime(code, codeType string) (*model.SolarStateContract, error) {
+func (c *Client) GetAirportSolarTime(ctx context.Context, code, codeType string) (*model.SolarStateContract, error) {
 	if err := c.validateCode(codeType, code); err != nil {
 		return nil, err
 	}
@@ -88,7 +89,7 @@ func (c *Client) GetAirportSolarTime(code, codeType string) (*model.SolarStateCo
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +103,7 @@ func (c *Client) GetAirportSolarTime(code, codeType string) (*model.SolarStateCo
 }
 
 // GetAirportSolarTimeByDate retrieves the solar time of an airport at a specific date - TIER 1
-func (c *Client) GetAirportSolarTimeByDate(code, codeType string, dateLocal time.Time) (*model.SolarStateContract, error) {
+func (c *Client) GetAirportSolarTimeByDate(ctx context.Context, code, codeType string, dateLocal time.Time) (*model.SolarStateContract, error) {
 	if err := c.validateCode(codeType, code); err != nil {
 		return nil, err
 	}
@@ -116,7 +117,7 @@ func (c *Client) GetAirportSolarTimeByDate(code, codeType string, dateLocal time
 		return nil, err
 	}
 
-	req, err := c.getRequest(url)
+	req, err := c.getRequest(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +130,7 @@ func (c *Client) GetAirportSolarTimeByDate(code, codeType string, dateLocal time
 }
 
 // GetGreatCircleDistance retrieves the distance and time between two airports - TIER 2
-func (c *Client) GetGreatCircleDistance(codeType, codeFrom, codeTo string, aircraftName, flightTimeModel *string) (*model.AirportDistanceTimeContract, error) {
+func (c *Client) GetGreatCircleDistance(ctx context.Context, codeType, codeFrom, codeTo string, aircraftName, flightTimeModel *string) (*model.AirportDistanceTimeContract, error) {
 	codeType = strings.ToLower(codeType)
 	switch codeType {
 	case "iata":
@@ -168,7 +169,7 @@ func (c *Client) GetGreatCircleDistance(codeType, codeFrom, codeTo string, aircr
 		return nil, err
 	}
 
-	req, err := c.getRequest(url + "?" + qv.Encode())
+	req, err := c.getRequest(ctx, url+"?"+qv.Encode())
 	if err != nil {
 		return nil, err
 	}

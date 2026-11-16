@@ -15,6 +15,7 @@ package client
 //   limitations under the License.
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -98,7 +99,7 @@ func TestCreateWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).CreateWebhookSubscription(
+		got, err := newTestClient(srv.URL).CreateWebhookSubscription(context.Background(),
 			"BA123", model.FlightSubscriptionSubjectTypeFlightByNumber,
 			"https://example.com/hook", &retries,
 		)
@@ -117,7 +118,7 @@ func TestCreateWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).CreateWebhookSubscription(
+		_, err := newTestClient(srv.URL).CreateWebhookSubscription(context.Background(),
 			"EGLL", model.FlightSubscriptionSubjectTypeFlightByAirportICAO,
 			"https://example.com/hook", nil,
 		)
@@ -132,7 +133,7 @@ func TestCreateWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).CreateWebhookSubscription(
+		_, err := newTestClient(srv.URL).CreateWebhookSubscription(context.Background(),
 			"EGLL", model.FlightSubscriptionSubjectTypeFlightByAirportICAO,
 			"https://example.com/hook", nil,
 		)
@@ -146,7 +147,7 @@ func TestCreateWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).CreateWebhookSubscription(
+		_, err := newTestClient(srv.URL).CreateWebhookSubscription(context.Background(),
 			"BAD", model.FlightSubscriptionSubjectTypeFlightByNumber,
 			"https://example.com/hook", nil,
 		)
@@ -169,7 +170,7 @@ func TestGetWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetWebhookSubscription("sub-abc")
+		got, err := newTestClient(srv.URL).GetWebhookSubscription(context.Background(), "sub-abc")
 		require.NoError(t, err)
 		assert.Equal(t, "sub-abc", got.ID)
 	})
@@ -181,7 +182,7 @@ func TestGetWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetWebhookSubscription("missing")
+		_, err := newTestClient(srv.URL).GetWebhookSubscription(context.Background(), "missing")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -200,7 +201,7 @@ func TestDeleteWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		err := newTestClient(srv.URL).DeleteWebhookSubscription("sub-xyz")
+		err := newTestClient(srv.URL).DeleteWebhookSubscription(context.Background(), "sub-xyz")
 		require.NoError(t, err)
 	})
 
@@ -211,7 +212,7 @@ func TestDeleteWebhookSubscription(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		err := newTestClient(srv.URL).DeleteWebhookSubscription("missing")
+		err := newTestClient(srv.URL).DeleteWebhookSubscription(context.Background(), "missing")
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -235,7 +236,7 @@ func TestListWebhookSubscriptions(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).ListWebhookSubscriptions()
+		got, err := newTestClient(srv.URL).ListWebhookSubscriptions(context.Background())
 		require.NoError(t, err)
 		require.Len(t, got, 2)
 		assert.Equal(t, "sub-1", got[0].ID)
@@ -249,7 +250,7 @@ func TestListWebhookSubscriptions(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).ListWebhookSubscriptions()
+		got, err := newTestClient(srv.URL).ListWebhookSubscriptions(context.Background())
 		require.NoError(t, err)
 		assert.Empty(t, got)
 	})
@@ -261,7 +262,7 @@ func TestListWebhookSubscriptions(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).ListWebhookSubscriptions()
+		_, err := newTestClient(srv.URL).ListWebhookSubscriptions(context.Background())
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -281,7 +282,7 @@ func TestGetWebhookSubscriptionsBalance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).GetWebhookSubscriptionsBalance()
+		got, err := newTestClient(srv.URL).GetWebhookSubscriptionsBalance(context.Background())
 		require.NoError(t, err)
 		assert.Equal(t, int64(42), got.CreditsRemaining)
 	})
@@ -293,7 +294,7 @@ func TestGetWebhookSubscriptionsBalance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).GetWebhookSubscriptionsBalance()
+		_, err := newTestClient(srv.URL).GetWebhookSubscriptionsBalance(context.Background())
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
@@ -317,7 +318,7 @@ func TestRefillWebhookSubscriptionsBalance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		got, err := newTestClient(srv.URL).RefillWebhookSubscriptionsBalance(100)
+		got, err := newTestClient(srv.URL).RefillWebhookSubscriptionsBalance(context.Background(), 100)
 		require.NoError(t, err)
 		assert.Equal(t, int64(142), got.CreditsRemaining)
 	})
@@ -329,7 +330,7 @@ func TestRefillWebhookSubscriptionsBalance(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, err := newTestClient(srv.URL).RefillWebhookSubscriptionsBalance(-1)
+		_, err := newTestClient(srv.URL).RefillWebhookSubscriptionsBalance(context.Background(), -1)
 		require.Error(t, err)
 		var apiErr *model.APIError
 		require.ErrorAs(t, err, &apiErr)
